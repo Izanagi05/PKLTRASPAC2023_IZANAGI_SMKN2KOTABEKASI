@@ -1,0 +1,38 @@
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Ambil data penjualan dari formulir
+    $penjualan = $_POST['penjualan'];
+    $hariprediksi = $_POST['hariprediksi'];
+
+    // Implementasikan perhitungan regresi linear
+    $iterasi = 10;
+    $alpha = 0.1;
+    $jumlah_sampel = count($penjualan);
+    $koefisien = 0;
+    $konstanta = 0;
+
+    for ($i = 0; $i < $iterasi; $i++) {
+        $y_pred = array();
+        $selisih_prediksi = array();
+        $selisih_koef = 0;
+        $selisih_konst = 0;
+
+        // Hitung prediksi
+        for ($j = 0; $j < $jumlah_sampel; $j++) {
+            $y_pred[$j] = $konstanta + $koefisien * ($j + 1);
+            $selisih_prediksi[$j] = $y_pred[$j] - $penjualan[$j];
+            $selisih_koef += ($j + 1) * $selisih_prediksi[$j];
+            $selisih_konst += $selisih_prediksi[$j];
+        }
+
+        // Perbarui koefisien
+        $selisih_koef /= $jumlah_sampel;
+        $selisih_konst /= $jumlah_sampel;
+        $koefisien -= $alpha * $selisih_koef;
+        $konstanta -= $alpha * $selisih_konst;
+    }
+
+    // Prediksi nilai untuk hari yang ditentukan (hariprediksi)
+    $prediksi_hari_ke_sekian = $konstanta + $koefisien * $hariprediksi;
+}
+?>
