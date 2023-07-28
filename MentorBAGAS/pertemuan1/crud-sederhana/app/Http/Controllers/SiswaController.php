@@ -54,7 +54,6 @@ class SiswaController extends Controller
         $data = Siswa::orderBy('nama')->get();
 
 
-
         $spreadsheet = new Spreadsheet();
         $sheet= $spreadsheet->getActiveSheet();
         $tableHead=[
@@ -127,7 +126,7 @@ class SiswaController extends Controller
             $spreadsheet->getActiveSheet()->getStyle('A' . $row . ':F' . $row)->applyFromArray($rowStyle);
 
 
-            // Set alignment pada seluruh data
+            // Set alignment pada seluruh data 
             $spreadsheet->getActiveSheet()->getStyle('A' . $row . ':F' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
             $row++;
