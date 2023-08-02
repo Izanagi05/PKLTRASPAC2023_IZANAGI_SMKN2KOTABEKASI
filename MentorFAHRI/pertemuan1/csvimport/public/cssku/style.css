@@ -1,0 +1,16 @@
+.kartuu {
+    /* max-width: 800px; */
+    margin: 0 auto;
+    overflow-x: scroll;
+    border:solid gray 3px ;
+
+}
+.card-head{
+    border-top: solid 5px rgb(103, 139, 255);
+
+}
+.bodyku{
+    background: rgb(252, 252, 252);
+}
+/* .btn-import{} */
+

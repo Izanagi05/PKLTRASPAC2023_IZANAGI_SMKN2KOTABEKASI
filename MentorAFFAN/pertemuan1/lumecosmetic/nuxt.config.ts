@@ -41,11 +41,22 @@ export default defineNuxtConfig({
                 src: 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js',
                 integrity: 'sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN',
                 crossorigin: 'anonymous'
-            }
+            },
+            { src: '/bootstrap.bundle.min.js'}
             
         ],
     }
-},
-//  modules: ['bootstrap-vue/nuxt'],
+},  
+css:[ 'bootstrap-icons/font/bootstrap-icons.css',
+"~/node_modules/bootstrap/dist/css/bootstrap.min.css"
+
+],
+        modules: ['bootstrap-vue/nuxt'],
+        plugins:[ 
+            {src: '@/plugins/plugku'},
+            { src: "~/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js", mode: "client" },
+            { src: '~/assets/bootstrap/mystyle.scss'} 
+        ]
+
 
 })
