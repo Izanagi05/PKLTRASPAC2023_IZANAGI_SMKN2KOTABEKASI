@@ -17,6 +17,8 @@ use App\Http\Controllers\SiswaController;
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+$router->get('/stemming', 'StemmingController@stemming');
+
 $router->get('/getsiswaall', 'SiswaController@getallsiswa');
 $router->get('/getsiswa/exportpdf', 'SiswaController@exportpdf');
 $router->get('/getsiswa/exportexcel', 'SiswaController@exportexcel');

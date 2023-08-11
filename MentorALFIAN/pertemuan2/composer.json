@@ -1,0 +1,6 @@
+{
+    "require": {
+        "sastrawi/sastrawi": "^1.2",
+        "flipbox/lumen-generator": "^9.2"
+    }
+}

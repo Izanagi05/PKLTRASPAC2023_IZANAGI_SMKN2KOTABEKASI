@@ -9,7 +9,8 @@
         "barryvdh/laravel-dompdf": "^2.0",
         "flipbox/lumen-generator": "^9.2",
         "laravel/lumen-framework": "^10.0",
-        "phpoffice/phpspreadsheet": "^1.29"
+        "phpoffice/phpspreadsheet": "^1.29",
+        "sastrawi/sastrawi": "^1.2"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

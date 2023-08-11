@@ -21,7 +21,7 @@ class SiswaController extends Controller
      */
     public function __construct()
     {
-        //
+
     }
 
     public function exportpdf(){
@@ -41,7 +41,6 @@ class SiswaController extends Controller
             $html .= '<td>'.$siswa->nis.'</td>';
             $html .= '<td>'.$siswa->alamat.'</td>';
             $html .= '<td>'.$siswa->lahir.'</td>';
-
             $html .= '</tr>';
         }
         '</table>';
@@ -124,9 +123,7 @@ class SiswaController extends Controller
             //style backgroundnya ambil dari event&odd row
             $rowStyle = ($row % 2 == 0) ? $evenRow : $oddRow;
             $spreadsheet->getActiveSheet()->getStyle('A' . $row . ':F' . $row)->applyFromArray($rowStyle);
-
-
-            // Set alignment pada seluruh data 
+            // Set alignment pada seluruh data
             $spreadsheet->getActiveSheet()->getStyle('A' . $row . ':F' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
             $row++;

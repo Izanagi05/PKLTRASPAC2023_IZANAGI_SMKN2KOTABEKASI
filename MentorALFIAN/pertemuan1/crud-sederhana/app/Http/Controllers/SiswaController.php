@@ -151,7 +151,7 @@ class SiswaController extends Controller
                 'success' => true,
                 // 'k' => true,
                 'status' => 200,
-            ]);
+            ],200);
         } catch (\Throwable $e) {
             return response()->json([
                 'data' => null,
@@ -188,7 +188,7 @@ class SiswaController extends Controller
                 'message' => 'Berhasil membuat',
                 'success' => true,
                 'status' => 200,
-            ]);
+            ], 500);
 
         }
        } catch (\Throwable $e) {
@@ -220,8 +220,8 @@ try {
                 'data' =>null,
                 'message' => 'Gagal update',
                 'success' => false,
-                'status' => 500,
-            ],500);
+                'status' => 422,
+            ],422);
         }else{
             // $data->update($request->all());
             $data->fill($request->all());
@@ -233,7 +233,7 @@ try {
                 'message' => 'Berhasil update',
                 'success' => true,
                 'status' => 201,
-            ]);
+            ],201);
 
         }
 

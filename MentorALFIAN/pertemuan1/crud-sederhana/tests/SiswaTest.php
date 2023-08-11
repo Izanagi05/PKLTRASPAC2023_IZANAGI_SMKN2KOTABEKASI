@@ -4,6 +4,7 @@ use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use Tests\TestCase;
 use App\Models\Siswa;
+use  \Sastrawi\Stemmer\StemmerFactory;
 use Illuminate\Http\Response;
 
 class SiswaTest extends TestCase
@@ -32,20 +33,20 @@ $response->seeJsonEquals($ekspetasi);//200 ok
 
 public function testCreateSiswa(){
     $this->post('/postsiswa', []);
-    $this->assertResponseStatus(500);
+    $this->assertResponseStatus(422);
     $this->seeJsonEquals([
         'data' =>null,
         'message' => 'Gagal membuat',
         'success' => false,
-        'status' => 500,
+        'status' => 422,
     ]);
     }
 
     public function testUpdateSiswa(){
 
-            $id= Siswa::findOrFail('21');
+            $id= Siswa::findOrFail('12');
             $this->put('/updatesiswa/'.$id->siswa_id, [
-                'nama' => 'John Doe',
+                'nama' => 'Paramita ',
                 'alamat' => 'Jl. Buntu No. 123',
             ]);
 
@@ -58,14 +59,32 @@ public function testCreateSiswa(){
         'status' => 422,
     ]);
         }
-
-
-public function testDeleteSiswa(){
-    $id= Siswa::findOrFail('14');
-    $this->delete('/deletesiswa/'.$id->siswa_id);
-    $this->notSeeInDatabase('siswas',  ['siswa_id' => $id->siswa_id]);
-    $this->assertResponseStatus(200);
+    public function testDeleteSiswa(){
+        $id= Siswa::findOrFail('14');
+        $this->delete('/deletesiswa/'.$id->siswa_id);
+        $this->notSeeInDatabase('siswas',  ['siswa_id' => $id->siswa_id]);
+        $this->assertResponseStatus(200);
 }
+
+    public function testStemming(){
+        $stemmerFactory = new StemmerFactory();
+        $stemmer = $stemmerFactory->createStemmer();
+        $input = 'Perekonomian Indonesia sedang dalam pertumbuhan yang membanggakan';
+        $ekspetasi = 'ekonomi indonesia sedang dalam tumbuh yang bangga';
+        $output = $stemmer->stem($input);
+        $this->assertEquals($ekspetasi, $output);
+
+    }
+    public function testStringinField(){
+        $Siswa=Siswa::all();
+        foreach ($Siswa as $key => $sswa) {
+            $this->assertStringContainsString('No',$sswa->alamat);
+            // $this->assertStringNotContainsString('aku',$sswa->nama);
+        }
+    }
+
+
+
 }
 
 

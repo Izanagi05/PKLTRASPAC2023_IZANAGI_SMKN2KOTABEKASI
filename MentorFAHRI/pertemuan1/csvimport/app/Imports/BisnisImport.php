@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Models\Bisnis;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 
 class BisnisImport implements ToModel
 {
@@ -14,6 +15,7 @@ class BisnisImport implements ToModel
     */
     public function model(array $row)
     {
+        // dd($row);
         return new Bisnis([
             'series_reference' => $row[0],
             'period' => $row[1],
@@ -31,6 +33,11 @@ class BisnisImport implements ToModel
             'series_title_5' => $row[13],
         ]);
     }
+
+    // public function chunkSize(): int
+    // {
+    //     return 5000;
+    // }
 }
 
 // 'series_reference' => $row['series_reference'],
