@@ -40,6 +40,7 @@ class BisnisCotroller extends Controller
         }else{
         foreach ($csvData as $line) {
             $row = str_getcsv($line, ',');
+            // dd($row);
                 Bisnis::create([
                     'series_reference' => $row[0],
                     'period' => $row[1],

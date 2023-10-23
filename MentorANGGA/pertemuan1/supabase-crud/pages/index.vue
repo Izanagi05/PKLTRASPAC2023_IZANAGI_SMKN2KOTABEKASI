@@ -16,7 +16,7 @@
   import supabase from '~/plugins/supabase.js'
 export default {
   // middleware:"middlewareguest",
-  middleware:'middlewareauth',
+  // middleware:'middlewareauth',
   data() {
     return {
       waktu:1

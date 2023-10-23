@@ -1,0 +1,722 @@
+<template>
+  <div style="background-color: #e3ded1;">
+    <v-app-bar dense class="grey lighten-5">
+      <div class="d-flex justify-space-between align-center" style="width:100%;">
+        <div class="d-flex align-center">
+
+          <v-btn icon @click="$router.push('/')" >
+            <v-icon color="#7b5037"> mdi-arrow-left </v-icon>
+          </v-btn>
+      <div class="text-h6 ml-2 textkujudul">
+        <v-icon size="40" class="mr-2" color="#7b5037">mdi-laptop-account</v-icon> RoomKu
+      </div>
+    </div>
+       <v-subheaders class="ma-0 textkujudul">Your Peer ID: {{ peerId }}</v-subheaders>
+      </div>
+      </v-app-bar
+    >
+    <v-container class="px-2 pt-4 py-15" >
+      <v-row class="">
+        <v-col cols="12" lg="10" md="10" class="" style="" order="2" order-lg="1" order-md="1">
+         <v-card   class="grey lighten-5 pa-4 rounded-xl">
+          <div v-if="layarkondisi==1">
+            <video rounded-lg style="border-radius: 10px;height: 70vh;width: 100%;"
+      id="my-video"
+      :srcObject.prop="localStream"
+      autoplay
+      muted
+      playsinline
+    ></video>
+          </div>
+          <div v-else>
+            <v-img src="/download.png" max-width="100%" style="border-radius:10px;" height="70vh"></v-img>
+          </div>
+         </v-card>
+          <v-card    class="grey lighten-5 pa-2 mt-4 rounded-xl" lg="" >
+            <div class="d-flex justify-center">
+          <v-btn v-if="btnmic===true"  fab small class="mx-2"
+            ><v-icon color="#7b5037" @click="startVoice" size="20">mdi-microphone-outline</v-icon></v-btn
+          >
+          <v-btn v-else fab small class="mx-2" color="error"
+            ><v-icon color="white" @click="startVoice" size="20">mdi-microphone-off</v-icon></v-btn
+          >
+      <v-btn v-if="btnvid===true"  @click="startVideo" fab small class="mx-2">
+        <v-icon color="#7b5037" size="20">mdi-video-outline</v-icon>
+      </v-btn>
+      <v-btn v-else @click="startVideo" color="error" fab small class="mx-2">
+    <v-icon color="white" size="20">mdi-video-off</v-icon>
+  </v-btn>
+          <v-btn @click="startDisplay" fab small class="mx-2"
+            ><v-icon color="#7b5037" size="20">mdi-monitor-share</v-icon></v-btn
+          >
+          <v-btn  fab small class="mx-2" color="error"  @click="$router.push('/')">
+        <v-icon  style="transform: rotate(135deg);" size="20"> mdi-phone </v-icon>
+      </v-btn>
+            </div>
+          </v-card>
+        </v-col>
+
+        <v-col cols="12" lg="2" md="2" order="1" order-lg="2" order-md="2" >
+          <v-card  color="#e3ded1" class="grey lighten-5 pa-4 rounded-xl right-col ">
+          <v-row  class="">
+            <v-col   v-for="peer in peers" :key="peer.peerId" cols="6" lg="12" md="12">
+              <div v-if="layarkondisi==0">
+                <v-img :src="'/download.png'" style="border-radius:10px;width:100%;"></v-img>
+              </div>
+
+                <video style="border-radius: 10px;width: 100%;"
+                :id="peer.peerId"
+                :peerId="peer.peerId"
+        :srcObject.prop="peer.stream"
+        autoplay
+        playsinline
+      ></video>
+      <span class="text-caption text-ellipsis">pengguna  lain</span>
+            </v-col>
+          </v-row>
+          </v-card>
+        </v-col>
+
+
+      </v-row>
+    </v-container>
+
+
+  </div>
+</template>
+<script>
+import Peer from "skyway-js";
+
+export default {
+  data() {
+    return {
+      localStream: null,
+      peerId: "",
+      inputId: "",
+      peer: null,
+      btnvid:false,
+      btnmic:false,
+      layarkondisi:0,
+      room: false,
+      peers: [],
+      dataku: [
+        { img: "download.png" },
+        { img: "download.png" },
+        { img: "download.png" },
+        { img: "download.png" },
+        { img: "download.png" },
+        { img: "download.png" },
+      ],
+    };
+  },
+  mounted() {
+    this.peer = new Peer({
+      key: "abe02cb1-4e86-49d6-87f0-d682a3fd6a5f",
+      debug: 3,
+    });
+    this.peer.on("open", (peerId) => {
+      this.peerId = peerId;
+    });
+  },
+  methods: {
+    startDisplay() {
+      if (!navigator.mediaDevices.getDisplayMedia) {
+        alert(`Error: Your device cannot use this type of stream.`);
+        return;
+      }
+
+      navigator.mediaDevices
+        .getDisplayMedia()
+        .then((stream) => {
+          this.localStream = stream;
+          this.layarkondisi=1
+        })
+        .then(this.joinRoom)
+        .catch((err) => {
+          alert(`Error: Your device cannot use this type of stream.`);
+        });
+    },
+    startVoice() {
+      navigator.mediaDevices
+        .getUserMedia({ video: true, audio: true })
+        .then((stream) => {
+           this.btnmic=!this.btnmic
+          if(this.btnvid===true){
+
+            this.localStream = stream;
+          }else{
+              this.localStream.getAudioTracks().forEach(track => track.stop())
+          }
+        })
+        .then(this.joinRoom)
+        .catch((err) => {
+          alert(`Error: Your device cannot use this type of stream.`);
+        });
+    },
+    startVideo() {
+      navigator.mediaDevices
+        .getUserMedia({ video: true, audio: true })
+        .then((stream) => {
+          this.btnvid=!this.btnvid
+          if(this.btnvid===true){
+            this.localStream = stream;
+            this.layarkondisi=1
+          }else{
+             this.localStream.getTracks().forEach(track => track.stop());
+            // this.localStream = null;
+            // this.layarkondisi=0
+
+          }
+        })
+        .then(this.joinRoom)
+        .catch((err) => {
+          alert(`Error: Your device cannot use this type of stream.`);
+        });
+    },
+    joinRoom() {
+      const peer = this.peer;
+      if (this.room) {
+        this.room.replaceStream(this.localStream);
+        return;
+      }
+      this.room = peer.joinRoom(this.$route.query.roomId, {
+        mode: "mesh",
+        stream: this.localStream,
+      });
+
+      this.room.once("open", () => {
+        console.log("=== You joined ===\n");
+      });
+      this.room.on("peerJoin", (peerId) => {
+        console.log(`=== ${peerId} joined ===\n`);
+      });
+
+      this.room.on("peerLeave", (peerId) => {
+        this.peers = this.peers.filter((p) => p.peerId !== peerId);
+      });
+
+      this.room.on("stream", async (stream) => {
+        this.peers = this.peers.filter((p) => p.peerId !== stream.peerId);
+        this.peers.push({ peerId: stream.peerId, stream: stream });
+      });
+    },
+  },
+  destroyed() {
+    if (this.room) this.room.close();
+    if (this.peer) this.peer.destroy();
+  },
+};
+</script>
+<style>
+.parent{
+  overflow: hidden;
+}
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  display: none;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #BDBDBD;
+  border-radius: 3px;
+}
+
+#cameraView {
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg); /* Safari and Chrome */
+  -moz-transform: rotateY(180deg); /* Firefox */
+}
+#my-video {
+  border-radius: 10px;
+  /* max-width: 50vw;
+  max-height: 30vh; */
+}
+.right-col {
+  overflow-y: scroll;
+  height: 85vh;
+}
+</style>
+
+
+
+
+
+
+
+
+
+
+<template>
+  <div style="background-color: #e3ded1">
+    <v-app-bar dense class="grey lighten-5">
+      <div
+        class="d-flex justify-space-between align-center"
+        style="width: 100%"
+      >
+        <div class="d-flex align-center">
+          <v-btn icon @click="$router.push('/')">
+            <v-icon color="#7b5037"> mdi-arrow-left </v-icon>
+          </v-btn>
+          <div class="text-h6 ml-2 textkujudul">
+            <v-icon size="40" class="mr-2" color="#7b5037"
+              >mdi-laptop-account</v-icon
+            >
+            RoomKu
+          </div>
+        </div>
+        <v-subheaders class="ma-0 textkujudul"
+          >Your Peer ID: {{ peerId }}</v-subheaders
+        >
+      </div>
+    </v-app-bar>
+    <v-container class="px-2 pt-4 py-15">
+      <v-row class="">
+        <v-col
+          cols="12"
+          lg="10"
+          md="10"
+          class=""
+          style=""
+          order="2"
+          order-lg="1"
+          order-md="1"
+        >
+          <v-card class="grey lighten-5 pa-4 rounded-xl">
+            <div v-if="layarkondisi == 1">
+              <div v-if="localStreamVideo !== null">
+                <video
+                  rounded-lg
+                  style="border-radius: 10px; height: 70vh; width: 100%"
+                  id="my-video"
+                  :srcObject.prop="localStreamVideo"
+                  autoplay
+                  muted
+                  playsinline
+                ></video>
+              </div>
+            </div>
+            <div v-else-if="layarkondisi==0">
+              <v-img
+                src="/download.png"
+                max-width="100%"
+                style="border-radius: 10px"
+                height="70vh"
+              ></v-img>
+            </div>
+            <div v-else>
+
+            </div>
+            <div v-if="layarkondisiVoice == 1">
+              <div v-if="localStreamVoice !== null">
+                <v-icon color="#7b5037" size="20"
+                  >mdi-microphone-outline</v-icon
+                >
+              </div>
+            </div>
+            <div v-else>
+              <v-icon color="#7b5037" size="20">mdi-microphone-off</v-icon>
+            </div>
+            <div v-if="layarkondisiScreen == 1">
+              <div v-if="localStreamScreen !== null">
+                <video
+                  rounded-lg
+                  style="border-radius: 10px; height: 70vh; width: 100%"
+                  id="my-video"
+                  :srcObject.prop="localStreamScreen"
+                  autoplay
+                  muted
+                  playsinline
+                >
+
+                </video>
+                <div v-if="layarkondisiVideoInScreem == 1">
+                    <video
+                      rounded-lg
+                      style="border-radius: 10px; height: 10vh; width: 100%"
+                      id="my-video"
+                      :srcObject.prop="localStreamVideo"
+                      autoplay
+                      muted
+                      playsinline
+                    ></video>
+                  </div>
+                  <div v-else>
+                    <v-img
+                      src="/download.png"
+                      width="100%"
+                      style="border-radius: 10px"
+                      height="10vh"
+                    ></v-img>
+                  </div>
+              </div>
+            </div>
+            <div v-else>stop screen</div>
+          </v-card>
+          <v-card class="grey lighten-5 pa-2 mt-4 rounded-xl" lg="">
+            <div class="d-flex justify-center">
+              <v-btn v-if="btnmic === true" fab small class="mx-2"
+                ><v-icon
+                  color="#7b5037"
+                  @click="startVoiceKu('Voice')"
+                  size="20"
+                  >mdi-microphone-outline</v-icon
+                ></v-btn
+              >
+              <v-btn v-else fab small class="mx-2" color="error"
+                ><v-icon color="white" @click="startVoiceKu('Voice')" size="20"
+                  >mdi-microphone-off</v-icon
+                ></v-btn
+              >
+              <v-btn
+                v-if="btnvid === true"
+                @click="startVideoKu()"
+                fab
+                small
+                class="mx-2"
+              >
+                <v-icon color="#7b5037" size="20">mdi-video-outline</v-icon>
+              </v-btn>
+              <v-btn
+                v-else
+                @click="startVideoKu()"
+                color="error"
+                fab
+                small
+                class="mx-2"
+              >
+                <v-icon color="white" size="20">mdi-video-off</v-icon>
+              </v-btn>
+              <v-btn  @click="startScreenKu('Screen')" fab small class="mx-2"
+                ><v-icon color="#7b5037" size="20"
+                  >mdi-monitor-share</v-icon
+                ></v-btn
+              >
+              <!-- <v-btn v-else @click="startScreenKuStop()" fab small class="mx-2"
+                ><v-icon color="#7b5037" size="20"
+                  >mdi-monitor-off</v-icon
+                ></v-btn
+              > -->
+              <v-btn
+                fab
+                small
+                class="mx-2"
+                color="error"
+                @click="$router.push('/')"
+              >
+                <v-icon style="transform: rotate(135deg)" size="20">
+                  mdi-phone
+                </v-icon>
+              </v-btn>
+            </div>
+          </v-card>
+        </v-col>
+
+        <v-col cols="12" lg="2" md="2" order="1" order-lg="2" order-md="2">
+          <v-card
+            color="#e3ded1"
+            class="grey lighten-5 pa-4 rounded-xl right-col"
+          >
+            <v-row class="">
+              <v-col
+                v-for="peer in peers"
+                :key="peer.peerId"
+                cols="6"
+                lg="12"
+                md="12"
+              >
+                <div v-if="layarkondisi == 0">
+                  <v-img
+                    :src="'/download.png'"
+                    style="border-radius: 10px; width: 100%"
+                  ></v-img>
+                </div>
+
+                <video
+                  style="border-radius: 10px; width: 100%"
+                  :id="peer.peerId"
+                  :peerId="peer.peerId"
+                  :srcObject.prop="peer.stream"
+                  autoplay
+                  playsinline
+                ></video>
+                <span class="text-caption text-ellipsis">pengguna lain</span>
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
+</template>
+<script>
+import Peer from "skyway-js";
+
+export default {
+  data() {
+    return {
+      localStream: null,
+      localStreamVoice: null,
+      localStreamVideo: null,
+      localStreamScreen: null,
+      KondlocalStream: null,
+      KondlocalStreamVideo: null,
+      KondlocalStreamScreen: null,
+      peerId: "",
+      inputId: "",
+      peer: null,
+      btnvid: false,
+      btnmic: false,
+      btnscreen: false,
+      layarkondisi: 0,
+      layarkondisiVoice: 0,
+      layarkondisiScreen: 0,
+      layarkondisiVideoInScreem: 0,
+      layarkondisiScreenInVideo: 0,
+      room: false,
+      peers: [],
+      dataku: [
+        { img: "download.png" },
+        { img: "download.png" },
+        { img: "download.png" },
+        { img: "download.png" },
+        { img: "download.png" },
+        { img: "download.png" },
+      ],
+    };
+  },
+  mounted() {
+    this.peer = new Peer({
+      key: "abe02cb1-4e86-49d6-87f0-d682a3fd6a5f",
+      debug: 3,
+    });
+    this.peer.on("open", (peerId) => {
+      this.peerId = peerId;
+    });
+  },
+  methods: {
+    startVoiceKu(param) {
+      this.KondlocalStream = param;
+      if (this.KondlocalStream === "Voice") {
+        navigator.mediaDevices
+          .getUserMedia({ audio: true })
+          .then((stream) => {
+            this.btnmic = !this.btnmic;
+            if (this.btnmic === true) {
+              this.layarkondisiVoice = 1;
+              this.localStreamVoice = stream;
+            } else {
+              this.localStreamVoice
+                .getAudioTracks()
+                .forEach((track) => track.stop());
+              this.localStreamVoice = null;
+              this.layarkondisiVoice = 0;
+            }
+          })
+          .then(this.joinRoom)
+          .catch((err) => {
+            alert(`Error: Your device cannot use this type of stream.`);
+          });
+      }
+    },
+    startVideoKu(){
+      // if (this.KondlocalStream === "Video") {
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then((stream) => {
+          this.btnvid = !this.btnvid;
+          if (this.btnvid === true) {
+            this.localStreamVideo = stream;
+            // if(this.)
+            if(this.layarkondisiScreen==1){
+              this.layarkondisiVideoInScreem=1
+              this.layarkondisi = -1;
+            }else{
+              this.layarkondisi = 1;
+              // this.layarkondisiVideoInScreem=0
+
+            }
+          } else {
+            this.localStreamVideo.getTracks().forEach((track) => track.stop());
+            this.localStreamVideo = null;
+            if(this.layarkondisiScreen!==1){
+
+              this.layarkondisi = 0;
+            }
+            // this.localStream = null;
+
+            // this.layarkondisi=0
+          }
+        })
+        .then(this.joinRoom)
+        .catch((err) => {
+          alert(`Error: Your device cannot use this type of stream.`);
+        });
+      // }
+    },
+    startScreenKu(param) {
+      // this.KondlocalStream = param;
+      // if (this.KondlocalStream === "Screen") {
+      if (!navigator.mediaDevices.getDisplayMedia) {
+        alert(`Error: Your device cannot use this type of stream.`);
+        return;
+      }
+
+      navigator.mediaDevices
+        .getDisplayMedia()
+        .then((stream) => {
+          this.btnscreen = !this.btnscreen;
+          console.log(this.btnscreen)
+          this.layarkondisi=-1
+          if (this.btnscreen === true) {
+            this.layarkondisiScreen = 1;
+            this.localStreamScreen = stream;
+            // this.startVideoKu()
+          } else {
+            // this.localStreamScreen.getTracks().forEach(track => track.stop());
+            this.layarkondisiScreen = 0;
+            this.localStreamScreen = null;
+            // this.startVideoKu()
+          }
+        })
+        .then(this.joinRoom)
+        .catch((err) => {
+          alert(`Error: Your device cannot use this type of stream.`);
+        });
+      // }
+    },
+    startScreenKuStop() {
+  if (this.localStreamScreen) {
+    this.localStreamScreen.getTracks().forEach(track => track.stop());
+    this.localStreamScreen = null;
+    this.layarkondisiScreen = 0;
+    this.btnscreen = false; // Mengatur ulang tombol berbagi layar ke false
+    this.startVideoKu();
+  }
+},
+
+
+
+
+    startDisplay() {
+      if (!navigator.mediaDevices.getDisplayMedia) {
+        alert(`Error: Your device cannot use this type of stream.`);
+        return;
+      }
+
+      navigator.mediaDevices
+        .getDisplayMedia()
+        .then((stream) => {
+          this.localStream = stream;
+          this.layarkondisi = 1;
+        })
+        .then(this.joinRoom)
+        .catch((err) => {
+          alert(`Error: Your device cannot use this type of stream.`);
+        });
+    },
+    startVoice() {
+      navigator.mediaDevices
+        .getUserMedia({ audio: true })
+        .then((stream) => {
+          this.btnmic = !this.btnmic;
+          if (this.btnvid === true) {
+            this.localStream = stream;
+          } else {
+            this.localStreamVoice
+              .getAudioTracks()
+              .forEach((track) => track.stop());
+          }
+        })
+        .then(this.joinRoom)
+        .catch((err) => {
+          alert(`Error: Your device cannot use this type of stream.`);
+        });
+    },
+    startVideo() {
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then((stream) => {
+          this.btnvid = !this.btnvid;
+          if (this.btnvid === true) {
+            this.localStreamVideo = stream;
+            this.layarkondisi = 1;
+          } else {
+            this.localStreamVideo.getTracks().forEach((track) => track.stop());
+            // this.localStream = null;
+            // this.layarkondisi=0
+          }
+        })
+        .then(this.joinRoom)
+        .catch((err) => {
+          alert(`Error: Your device cannot use this type of stream.`);
+        });
+    },
+    joinRoom() {
+      const peer = this.peer;
+      if (this.room) {
+        this.room.replaceStream(this.localStream);
+        return;
+      }
+      this.room = peer.joinRoom(this.$route.query.roomId, {
+        mode: "mesh",
+        stream: this.localStream,
+      });
+
+      this.room.once("open", () => {
+        console.log("=== You joined ===\n");
+      });
+      this.room.on("peerJoin", (peerId) => {
+        console.log(`=== ${peerId} joined ===\n`);
+      });
+
+      this.room.on("peerLeave", (peerId) => {
+        this.peers = this.peers.filter((p) => p.peerId !== peerId);
+      });
+
+      this.room.on("stream", async (stream) => {
+        this.peers = this.peers.filter((p) => p.peerId !== stream.peerId);
+        this.peers.push({ peerId: stream.peerId, stream: stream });
+      });
+    },
+  },
+  destroyed() {
+    if (this.room) this.room.close();
+    if (this.peer) this.peer.destroy();
+  },
+};
+</script>
+<style>
+.parent {
+  overflow: hidden;
+}
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  display: none;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #bdbdbd;
+  border-radius: 3px;
+}
+
+#cameraView {
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg); /* Safari and Chrome */
+  -moz-transform: rotateY(180deg); /* Firefox */
+}
+#my-video {
+  border-radius: 10px;
+  /* max-width: 50vw;
+  max-height: 30vh; */
+}
+.right-col {
+  overflow-y: scroll;
+  height: 85vh;
+}
+</style>

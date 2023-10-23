@@ -8,6 +8,7 @@ use App\Models\Kelas;
 class Siswa extends Model
 {
     use HasFactory;
+    
     protected $table = 'siswas';
     protected $primaryKey='siswa_id';
     // protected $hidden='siswa_id';

@@ -1,7 +1,7 @@
 import supabase from "~/plugins/supabase.js";
 export const state = () => {
   return {
-    nganu: false,
+    // nganu: false,
     authenticated: null,
   };
 };
@@ -9,31 +9,22 @@ export const state = () => {
 export const mutations = {
   loginsupa(state, payload) {
     // if(payload){
-
     state.authenticated = payload;
-    state.nganu = !!payload;
-    //   console.log("instif"+state.authenticated)
-    // }else{
-    //   state.authenticated =null
-    //   console.log("inst"+state.authenticated)
-
-    // }
   },
 };
 export const actions = {
   async login({ commit }, payload) {
-    // this.$cookies.set('cekuserlogin', payload)
-    const datanya = await supabase.auth.getUser();
-    commit('loginsupa',payload)
+    const dataku= this.$cookies.set('cekuserlogin', payload)
+    commit('loginsupa',dataku)
     this.$router.push("beranda");
   },
   async logout({ commit }) {
-    // this.$cookies.remove("cekuserlogin");
+    this.$cookies.remove("cekuserlogin");
     window.location.replace("/login");
   },
   async getcookienya({ commit }, payload) {
-    // const datanya =this.$cookies.get('cekuserlogin')
-    const datanya = await supabase.auth.getUser();
-    commit("loginsupa", datanya.data.data?.user?.id);
+    const datanya =this.$cookies.get('cekuserlogin')
+    // const datanya = await supabase.auth.getUser();
+    commit("loginsupa", datanya);
   },
 };

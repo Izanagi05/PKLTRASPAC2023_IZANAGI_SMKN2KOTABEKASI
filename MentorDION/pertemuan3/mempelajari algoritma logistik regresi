@@ -1,0 +1,47 @@
+x = [
+    [1,2],
+    [1,2],
+    [1,2],
+    [1,2],
+    [1,2],
+    [1,2],
+    [1,2],
+    [1,2],
+    [1,2],
+    [1,2]
+]
+
+y = [0,1,1,1,0,0,0,1,0,1]
+
+w = [0,0]
+b = 0
+
+function sigmoid(x){
+    return 1 / (1 + exp(-(x)))
+}
+
+
+arrayPrediksi = [xp1,xp2,...,xp10] 1 x 10
+xp1 = ((x11 * w1) + b)​ + ((x12 * w2) + b​)
+xp2 = ((x21 * w1) + b) + ((x22 * w2) + b)
+xp3 = ((x31 * w1) + b) + ((x32 * w2) + b)
+...
+
+arraySigmoid  = [xs1,xs2,...] 1 x 10
+xs1 = sigmoid(xp1)
+xs2 = sigmoid(xp2)
+
+misal xp1 = 0, maka xs1 = 0,5
+misal xp1 = 5000, maka xs1 = 1
+misal xp1 = -1000, maka xs1 = 0
+
+arraySelisihPrediksi = [xsp1, xsp2, ...] 1 x 10
+xsp1 = xs1 - y1
+xsp2 = xs2 - y2
+...
+
+x = 10 x 2
+xT = [
+    [1,1,1,1,1,1,1,1,1,1],
+    [2,2,2,2,2,2,2,2,2,2]
+] 2 x 10

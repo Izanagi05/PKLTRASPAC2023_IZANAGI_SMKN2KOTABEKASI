@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@supabase/supabase-js": "^2.38.1",
+    "@types/axios": "^0.14.0",
+    "axios": "^1.5.1",
+    "telegraf": "^4.14.0",
+    "telegraf-session-local": "^2.1.1"
+  }
+}

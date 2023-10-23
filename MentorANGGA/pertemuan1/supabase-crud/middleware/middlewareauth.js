@@ -12,10 +12,10 @@ import supabase from '~/plugins/supabase.js'
 export default async  function ({store,redirect}){
   // const sessionuser= await supabase.auth.getSession();
 
-  // store.dispatch('users/getcookienya')
-  const datanyaa=await supabase.auth.getUser()
+  store.dispatch('users/getcookienya')
+  // const datanyaa=await supabase.auth.getUser()
   // store.dispatch('users/login')
-  if( store.state.users.nganu){
+  if( store.state.users.authenticated){
 
     return redirect('/beranda')
 

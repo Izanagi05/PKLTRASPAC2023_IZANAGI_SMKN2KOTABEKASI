@@ -1,0 +1,29 @@
+{
+  "name": "webrtc-nuxt",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "@nuxtjs/axios": "^5.13.6",
+    "child_process": "^1.0.2",
+    "core-js": "^3.25.3",
+    "fs": "^0.0.1-security",
+    "net": "^1.0.2",
+    "nuxt": "^2.15.8",
+    "nuxt-socket-io": "^2.0.3",
+    "tls": "^0.0.1",
+    "vue": "^2.7.10",
+    "vue-server-renderer": "^2.7.10",
+    "vue-template-compiler": "^2.7.10",
+    "vue-webrtc": "^3.0.1",
+    "vuetify": "^2.6.10"
+  },
+  "devDependencies": {
+    "@nuxtjs/vuetify": "^1.12.3"
+  }
+}

@@ -1,0 +1,6 @@
+untuk melakukan testing dimethod tertentu
+vendor/bin/phpunit --filter=testStemming
+untuk melakukan testing di file tertentu
+vendor/bin/phpunit tests/SiswaTest.php
+php -S localhost:8000 -t public
+composer create-project --prefer-dist laravel/lumen blog
