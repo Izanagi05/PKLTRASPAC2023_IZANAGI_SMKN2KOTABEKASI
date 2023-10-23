@@ -24,6 +24,7 @@ class LoginController extends Controller
             'email' => 'Email atau kata sandi salah.',
         ]);
     }
+    //tescommit
     public function logout()
     {
         Auth::logout();
